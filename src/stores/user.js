@@ -57,7 +57,7 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('user')
     },
 
-    // 初始化用户信息（从 localStorage 恢复）
+    // 初始化用户信息
     initUser() {
       const token = localStorage.getItem('token')
       const userStr = localStorage.getItem('user')
