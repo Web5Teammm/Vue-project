@@ -116,20 +116,50 @@
         </section>
       </div>
     </div>
+        <!-- ===== [修改] 演员详情弹窗（增强版）===== -->
+    <div
+      v-if="showActorModal && selectedActor"
+      class="actor-modal"
+      @click.self="showActorModal = false"
+    >
+      <div class="actor-modal-content">
+        <!-- 头部 -->
+        <div class="actor-header">
+          <img
+            class="actor-avatar"
+            :src="selectedActor.avatar"
+            alt="演员头像"
+          />
 
-    <!-- 简化版演员弹窗 -->
-    <div v-if="showActorModal" class="temp-modal" @click.self="showActorModal = false">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>演员详情</h3>
+          <div class="actor-basic">
+            <h2 class="actor-name">{{ selectedActor.name }}</h2>
+            <p class="actor-role">演员 / 影视从业者</p>
+          </div>
+
           <button class="close-btn" @click="showActorModal = false">×</button>
         </div>
-        <div class="modal-body">
-          <p>演员详情功能待开发</p>
-          <p>点击了演员：{{ selectedActor?.name }}</p>
+
+        <!-- 简介 -->
+        <div class="actor-section">
+          <h3 class="section-title">演员简介</h3>
+          <p class="actor-bio">
+            {{ selectedActor.bio }}
+          </p>
         </div>
-        <div class="modal-footer">
-          <button class="confirm-btn" @click="showActorModal = false">关闭</button>
+
+        <!-- 代表作品 -->
+        <div class="actor-section">
+          <h3 class="section-title">代表作品</h3>
+          <ul class="actor-works">
+            <li
+              v-for="work in selectedActor.works"
+              :key="work.id"
+              class="work-item"
+              @click="goToMovie(work.id)"
+            >
+              🎬 {{ work.title }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -165,18 +195,68 @@ const mockMovies = [
     releaseTime: '2023-01-22',
     duration: '159分钟',
     director: '张艺谋',
-    actors: [3, 4],
+    actors: [3,4],
     description: '南宋绍兴年间，一群义士铲奸除恶的故事...'
   }
 ]
-
-// 模拟演员数据
+import wujingAvatar from '@/assets/images/actor-wujing.jpg'
+import liudehuaAvatar from '@/assets/images/actor-liudehua.jpg'
+import shentengAvatar from '@/assets/images/actor-shenteng.jpg'
+import yiyangqianxiAvatar from '@/assets/images/actor-yiyangqianxi.jpg'
+// =====  模拟演员数据，补充详情字段 =====
 const mockActors = [
-  { id: 1, name: '吴京' },
-  { id: 2, name: '刘德华' },
-  { id: 3, name: '沈腾' },
-  { id: 4, name: '易烊千玺' }
+  {
+    id: 1,
+    name: '吴京',
+    //avatar: '/assets/images/actor-wujing.jpg',
+    avatar: wujingAvatar,
+    bio: '中国内地男演员、导演，代表中国硬核动作电影形象，多次出演主旋律与商业大片。',
+    works: [
+      { id: 1, title: '流浪地球2' },
+      { id: 5, title: '战狼2' },
+      { id: 6, title: '长津湖' }
+    ]
+  },
+  {
+    id: 2,
+    name: '刘德华',
+    avatar: liudehuaAvatar,
+    bio: '华语影坛最具影响力的演员之一，涉猎警匪、文艺、商业片等多个类型。',
+    works: [
+      { id: 1, title: '流浪地球2' },
+      { id: 7, title: '无间道' }
+    ]
+  },
+  {
+    id: 3,
+    name: '沈腾',
+    avatar: shentengAvatar,
+    bio: '中国内地喜剧演员，开心麻花核心成员，擅长现实讽刺喜剧。',
+    works: [
+      { id: 8, title: '夏洛特烦恼' },
+      { id: 9, title: '疯狂的外星人' }
+    ]
+  },
+  {
+    id:4,
+    name:'易烊千玺',
+    avatar:yiyangqianxiAvatar,
+    bio:'中国内地流行歌手,舞者,演员,TFBOYS成员。',
+    works:[
+      {id:10,title:'送你一朵小红花'},
+      {id:11,title:'少年的你'}
+    ]
+  }
 ]
+//可跳转到其他影视作品
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const goToMovie = (movieId) => {
+  showActorModal.value = false
+  router.push(`/movie/${movieId}`)
+}
+
 
 const route = useRoute()
 const movieId = parseInt(route.params.id) || 1
@@ -618,8 +698,88 @@ onMounted(() => {
   cursor: pointer;
   font-family: inherit;
 }
-
+.actor-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
 .confirm-btn:hover {
   background: #2a3c5c;
 }
+/* ===== [新增] 演员详情弹窗样式 ===== */
+.actor-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actor-modal-content {
+  width: 90%;
+  max-width: 700px;
+  background: var(--color-background);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.actor-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.actor-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.actor-basic {
+  flex: 1;
+}
+
+.actor-name {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.actor-role {
+  opacity: 0.7;
+}
+
+.actor-section {
+  margin-bottom: 2rem;
+}
+
+.actor-bio {
+  line-height: 1.8;
+}
+
+.actor-works {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.work-item {
+  cursor: pointer;
+  padding: 0.5rem 0;
+  color: var(--vt-c-indigo);
+  font-weight: 500;
+}
+
+.work-item:hover {
+  text-decoration: underline;
+}
+
 </style>
