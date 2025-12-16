@@ -13,19 +13,19 @@ const router = createRouter({
       name: 'MovieDetail',
       component: () => import('@/views/MovieDetail.vue'),
     },
-    // 添加登录路由
+    //登录路由
     {
       path: '/login',
       name: 'Login',
       component: () => import('@/views/Login.vue'),
     },
-    // 添加注册路由
+    //注册路由
     {
       path: '/register',
       name: 'Register',
       component: () => import('@/views/Register.vue'),
     },
-    // 添加用户中心路由
+    //用户中心路由
     {
       path: '/user',
       name: 'UserCenter',
@@ -35,7 +35,7 @@ const router = createRouter({
   ],
 })
 
-// 添加路由守卫，检查登录状态
+//路由守卫，检查登录状态
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const isLoggedIn = !!token

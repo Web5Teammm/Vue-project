@@ -59,9 +59,9 @@ const handleLogin = async () => {
   }
 }
 
-// 忘记密码（暂留后续补充）
+// 忘记密码
 const handleForgot = () => {
-  alert('忘记密码功能待实现')
+  alert('请联系管理员重置密码。')
 }
 
 const goToRegister = () => {
