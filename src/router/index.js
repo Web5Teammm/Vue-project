@@ -35,18 +35,18 @@ const router = createRouter({
   ],
 })
 
-//添加路由守卫,检查登录状态
+//路由守卫，检查登录状态
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const isLoggedIn = !!token
 
-  //如果页面需要登录,但用户未登录
+  // 如果页面需要登录，但用户未登录
   if (to.meta.requiresAuth && !isLoggedIn) {
     next('/login') // 跳转到登录页
   } else if (to.path === '/login' && isLoggedIn) {
-    next('/') // 已登录用户访问登录页,跳转到首页
+    next('/') // 已登录用户访问登录页，跳转到首页
   } else {
-    next() //正常访问
+    next() // 正常访问
   }
 })
 
