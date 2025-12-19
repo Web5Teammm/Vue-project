@@ -5,7 +5,7 @@ export function useComments() {
     const isLoading = ref(true)
 
     const hasComments = computed(() => comments.value.length > 0)
-
+ 
     // 获取评论列表（与影视详情页评论功能对接）
     const fetchComments = async () => {
         isLoading.value = true
@@ -37,3 +37,4 @@ export function useComments() {
         fetchComments
     }
 }
+
