@@ -15,7 +15,7 @@
         <button class="delete-btn" @click="deleteComment(comment.id)" title="删除评论">
           <i class="fas fa-trash"></i>
         </button>
-      </div>
+      </div> 
     </div>
 
     <div v-else class="empty-state">
@@ -95,4 +95,5 @@ const { comments, isLoading, hasComments, deleteComment } = useComments()
   padding: 60px 20px;
   color: #666;
 }
+
 </style>
