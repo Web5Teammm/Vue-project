@@ -36,7 +36,10 @@ const { comments, isLoading, hasComments, deleteComment } = useComments()
   background: white;
   border-radius: 12px;
   padding: 25px;
-  margin-bottom: 30px;
+  margin: 0 20px 20px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: calc(100% - 40px);
+  box-sizing: border-box;
 }
 
 .comments-list {

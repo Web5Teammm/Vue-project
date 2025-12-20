@@ -27,8 +27,10 @@ const { userInfo, userName, logout } = useUserProfile()
   color: white;
   padding: 30px;
   border-radius: 12px;
-  margin-bottom: 30px;
+  margin: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: calc(100% - 40px);
+  box-sizing: border-box;
 }
 
 .user-avatar {
