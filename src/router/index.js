@@ -28,8 +28,8 @@ const router = createRouter({
     //用户中心路由
     {
       path: '/user',
-      name: 'UserCenter',
-      component: () => import('@/views/UserCenter.vue'),
+      name: 'User',
+      component: () => import('@/views/user.vue'),
       meta: { requiresAuth: true }, // 需要登录才能访问
     },
   ],
