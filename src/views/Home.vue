@@ -185,8 +185,6 @@ const startCarousel = () => {
   width: 250px;
   height: 330px;
   overflow: hidden;
-  border-radius: 8px;
-  background: #f5f5f5;
 }
 .carousel-img {
   width: 100%;
