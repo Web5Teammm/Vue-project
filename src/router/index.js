@@ -13,6 +13,18 @@ const router = createRouter({
       name: 'MovieDetail',
       component: () => import('@/views/MovieDetail.vue'),
     },
+    
+    {
+      path: '/all-films',
+      name: 'AllFilms',
+      component: () => import('@/views/AllFilms.vue'), 
+    },
+    
+    {
+      path: '/classify',
+      name: 'Classify',
+      component: () => import('@/views/Classify.vue'), 
+    },
     //登录路由
     {
       path: '/login',
@@ -35,7 +47,7 @@ const router = createRouter({
   ],
 })
 
-//路由守卫，检查登录状态
+//路由守卫，检查登录状态（无需修改）
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const isLoggedIn = !!token
@@ -46,7 +58,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.path === '/login' && isLoggedIn) {
     next('/') // 已登录用户访问登录页，跳转到首页
   } else {
-    next() // 正常访问
+    next() // 正常放行
   }
 })
 
