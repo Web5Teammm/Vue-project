@@ -42,6 +42,12 @@
           >
             {{ isCollected ? '❤️ 已收藏' : '🤍 收藏' }}
           </button>
+          <button 
+            class="btn-secondary"
+            @click="goToClips"
+          >
+            🎬 精彩片段
+          </button>
         </div>
       </div>
 
@@ -169,6 +175,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { API_BASE_URL } from '@/api/config'
 
 // 模拟数据
 const mockMovies = [
@@ -257,6 +264,9 @@ const goToMovie = (movieId) => {
   router.push(`/movie/${movieId}`)
 }
 
+const goToClips = () => {
+  router.push(`/clips/${movieId}`)
+}
 
 const route = useRoute()
 const movieId = parseInt(route.params.id) || 1
@@ -275,27 +285,33 @@ const fetchMovieData = async () => {
     loading.value = true
     error.value = null
     
-    // 模拟API延迟
-    await new Promise(resolve => setTimeout(resolve, 300))
+    // 从后端API获取数据
+    const response = await fetch(`${API_BASE_URL}/movies/${movieId}`)
+    const result = await response.json()
     
-    // 查找电影
-    const foundMovie = mockMovies.find(m => m.id === movieId)
-    
-    if (foundMovie) {
+    if (result.success && result.data) {
+      const foundMovie = result.data
+      
       // 转换数据结构
       movie.value = {
         ...foundMovie,
-        // 将演员ID转换为演员对象
-        cast: foundMovie.actors.map(actorId => {
-          const actor = mockActors.find(a => a.id === actorId)
-          return actor || { id: actorId, name: '未知演员' }
-        })
+        title: foundMovie.title,
+        type: foundMovie.type,
+        score: foundMovie.score,
+        status: foundMovie.status,
+        cover: foundMovie.cover,
+        releaseTime: foundMovie.release_time || foundMovie.releaseTime,
+        duration: foundMovie.duration,
+        director: foundMovie.director,
+        description: foundMovie.description,
+        // 演员数据已从后端获取
+        cast: foundMovie.cast || []
       }
       
-      // 模拟收藏状态
+      // 模拟收藏状态（后续可对接真实API）
       isCollected.value = false
     } else {
-      error.value = '找不到该电影信息'
+      error.value = result.message || '找不到该电影信息'
     }
     
     loading.value = false
@@ -483,6 +499,24 @@ onMounted(() => {
 
 .btn-primary.active {
   background: #10b981;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 0.75rem;
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: #ff7875;
 }
 
 /* 右侧信息区 */

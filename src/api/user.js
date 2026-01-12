@@ -16,13 +16,17 @@ export const userApi = {
       } else {
         return mockDelay(formatResponse(null, false, result.message || '用户名或密码错误'))
       }
-    }z
+    }
 
     // 真实 API 调用
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    // 将username转换为phone以适配后端
+    const requestData = credentials.username 
+      ? { phone: credentials.username, password: credentials.password }
+      : credentials
+    const response = await fetch(`${API_BASE_URL}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify(requestData),
     })
     const data = await response.json()
     return data
@@ -44,10 +48,16 @@ export const userApi = {
       }
     }
 
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    // 将username转换为phone以适配后端
+    const requestData = {
+      phone: userData.username || userData.phone,
+      password: userData.password,
+      nickname: userData.nickname || userData.username || '用户'
+    }
+    const response = await fetch(`${API_BASE_URL}/users/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(requestData),
     })
     const data = await response.json()
     return data
