@@ -44,7 +44,7 @@ export const movieApi = {
       return mockDelay(formatResponse(hotMovies))
     }
 
-    const response = await fetch(`${API_BASE_URL}/movies/hot`)
+    const response = await fetch(`${API_BASE_URL}/movies/hot/list`)
     const data = await response.json()
     return formatResponse(data)
   },
@@ -56,7 +56,7 @@ export const movieApi = {
       return mockDelay(formatResponse(newMovies))
     }
 
-    const response = await fetch(`${API_BASE_URL}/movies/new`)
+    const response = await fetch(`${API_BASE_URL}/movies/new/list`)
     const data = await response.json()
     return formatResponse(data)
   },

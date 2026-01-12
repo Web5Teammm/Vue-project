@@ -50,6 +50,7 @@ const handleLogin = async () => {
   const result = await userStore.login({
     username: username.value,
     password: password.value,
+    rememberMe: rememberMe.value
   })
 
   if (result.success) {

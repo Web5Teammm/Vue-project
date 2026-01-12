@@ -1,9 +1,9 @@
 //核心配置文件
 // 环境配置 - 通过这个开关控制使用模拟数据还是真实 API
-export const USE_MOCK = true // 改为 false 即可切换到真实后端
+export const USE_MOCK = false // 改为 false 即可切换到真实后端
 
 // 改API 基础地址切换后端
-export const API_BASE_URL = import.meta.env.VITE_API_URL || '真实后端地址'
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 // 请求超时时间
 export const REQUEST_TIMEOUT = 10000

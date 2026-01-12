@@ -1,17 +1,28 @@
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 export function useUserProfile() {
-    const userData = ref({
-        nickname: 'Vue爱好者',
-        status: '已登录'
-    })
+    const router = useRouter()
+    const userStore = useUserStore()
 
-    const userInfo = computed(() => userData.value)
-    const userName = computed(() => `用户 ${userData.value.nickname}`)
+    const userInfo = computed(() => ({
+        nickname: userStore.user?.nickname || userStore.user?.phone || '用户',
+        status: userStore.isLoggedIn ? '已登录' : '未登录'
+    }))
+    
+    const userName = computed(() => {
+        const user = userStore.user
+        if (user) {
+            return user.nickname || user.phone || '用户'
+        }
+        return '用户'
+    })
 
     const logout = () => {
         if (confirm('确定要退出登录吗？')) {
-            alert('已退出登录')
+            userStore.logout()
+            router.push({ name: 'Home' })
         }
     }
 

@@ -13,7 +13,16 @@ const router = createRouter({
       name: 'MovieDetail',
       component: () => import('@/views/MovieDetail.vue'),
     },
-    
+    {
+      path: '/clips/:id',
+      name: 'Clips',
+      component: () => import('@/views/Clips.vue'),
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: () => import('@/views/Search.vue'),
+    },
     {
       path: '/all-films',
       name: 'AllFilms',
@@ -41,6 +50,13 @@ const router = createRouter({
     {
       path: '/user',
       name: 'User',
+      component: () => import('@/views/user.vue'),
+      meta: { requiresAuth: true }, // 需要登录才能访问
+    },
+    //个人中心路由（别名）
+    {
+      path: '/personal',
+      name: 'Personal',
       component: () => import('@/views/user.vue'),
       meta: { requiresAuth: true }, // 需要登录才能访问
     },
