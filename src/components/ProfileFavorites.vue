@@ -6,14 +6,14 @@
 
     <div v-else-if="hasFavorites" class="favorites-grid">
       <div v-for="movie in favorites" :key="movie.id" class="movie-card">
-
+        <img :src="movie.cover" alt="海报" class="movie-poster" @click="$router.push('/detail/' + movie.id)" style="cursor: pointer;">
         <button class="remove-btn" @click="removeFavorite(movie.id)" title="取消收藏">
           <i class="fas fa-times"></i>
         </button>
         <div class="movie-info">
           <h4 class="movie-title">{{ movie.title }}</h4>
           <div class="movie-meta">
-            <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.rating }}</span>
+            <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.score || movie.rating }}</span>
             <span class="movie-type">{{ movie.type }}</span>
           </div>
         </div>

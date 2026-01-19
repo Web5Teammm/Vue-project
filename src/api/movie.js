@@ -21,7 +21,10 @@ export const movieApi = {
     // 真实 API 调用 (后期替换)
     const response = await fetch(`${API_BASE_URL}/movies`)
     const data = await response.json()
-    return formatResponse(data)
+    // The backend returns { success: true, data: [...] }
+    // But formatResponse wraps it again if we are not careful.
+    // If formatResponse looks like { success, data, message }, and data from backend is the same structure.
+    return data
   },
 
   // 获取电影详情
@@ -46,7 +49,7 @@ export const movieApi = {
 
     const response = await fetch(`${API_BASE_URL}/movies/hot/list`)
     const data = await response.json()
-    return formatResponse(data)
+    return data
   },
 
   // 获取最新电影
@@ -58,7 +61,7 @@ export const movieApi = {
 
     const response = await fetch(`${API_BASE_URL}/movies/new/list`)
     const data = await response.json()
-    return formatResponse(data)
+    return data
   },
 
   // 搜索电影
