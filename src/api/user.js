@@ -20,7 +20,7 @@ export const userApi = {
 
     // 真实 API 调用
     // 将username转换为phone以适配后端
-    const requestData = credentials.username 
+    const requestData = credentials.username
       ? { phone: credentials.username, password: credentials.password }
       : credentials
     const response = await fetch(`${API_BASE_URL}/users/login`, {
@@ -116,8 +116,10 @@ export const userApi = {
       return mockDelay(formatResponse(null, false, '操作失败'))
     }
 
-    const response = await fetch(`${API_BASE_URL}/users/${userId}/favorites/${movieId}`, {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/favorites`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ movieId })
     })
     const data = await response.json()
     return data
@@ -128,7 +130,13 @@ export const userApi = {
     if (USE_MOCK) {
       const user = mockUsers.find((u) => u.id === userId)
       if (user) {
-        return mockDelay(formatResponse(user.favorites))
+        // Here we should probably return full movie objects, but mock data only stores IDs.
+        // For simplicity, let's map IDs to basic objects or modify logic.
+        // Assuming mockData utils helper exists or we just return ids for now.
+        // Better:
+        const { getMovieById } = await import('@/utils/mockData')
+        const movies = user.favorites.map(id => getMovieById(id)).filter(Boolean)
+        return mockDelay(formatResponse(movies))
       }
       return mockDelay(formatResponse([]))
     }
@@ -137,4 +145,41 @@ export const userApi = {
     const data = await response.json()
     return data
   },
+
+  // 获取用户评论列表
+  async getUserComments(userId) {
+    if (USE_MOCK) {
+      const { mockComments, getMovieById } = await import('@/utils/mockData')
+      // Flatten all comments and find those by userId
+      // mockComments is { movieId: [comments] }
+      let userComments = []
+      Object.keys(mockComments).forEach(movieId => {
+        const comments = mockComments[movieId]
+        const found = comments.filter(c => c.userId === userId).map(c => ({
+          ...c,
+          movieTitle: getMovieById(parseInt(movieId))?.title || '未知影片',
+          movieCover: getMovieById(parseInt(movieId))?.cover
+        }))
+        userComments = userComments.concat(found)
+      })
+      return mockDelay(formatResponse(userComments))
+    }
+
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/comments`)
+    const data = await response.json()
+    return data
+  },
+
+  // 删除用户评论
+  async deleteUserComment(userId, commentId) {
+    if (USE_MOCK) {
+      // Mock deletion logic
+      return mockDelay(formatResponse(true))
+    }
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/comments/${commentId}`, {
+      method: 'DELETE'
+    })
+    const data = await response.json()
+    return data
+  }
 }

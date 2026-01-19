@@ -1,32 +1,29 @@
-import { ref, onMounted, computed } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 export function useFavorites() {
-    const favorites = ref([])
-    const isLoading = ref(true)
+    const userStore = useUserStore()
 
-    const hasFavorites = computed(() => favorites.value.length > 0)
+    const favorites = computed(() => userStore.favorites)
+    const isLoading = computed(() => false) // Store manages loading usually, or add loading state to store if needed
+    const hasFavorites = computed(() => userStore.favorites.length > 0)
 
-    // 获取收藏列表（与首页收藏功能对接）
+    // 获取收藏列表
     const fetchFavorites = async () => {
-        isLoading.value = true
-        try {
-            const stored = localStorage.getItem('userFavorites')
-            favorites.value = stored ? JSON.parse(stored) : []
-        } finally {
-            isLoading.value = false
-        }
+        await userStore.fetchFavorites()
     }
 
-    // 取消收藏（与首页收藏功能对接）
-    const removeFavorite = (movieId) => {
+    // 取消收藏
+    const removeFavorite = async (movieId) => {
         if (confirm('确定要取消收藏吗？')) {
-            favorites.value = favorites.value.filter(movie => movie.id !== movieId)
-            localStorage.setItem('userFavorites', JSON.stringify(favorites.value))
+            await userStore.toggleFavorite(movieId)
         }
     }
 
     onMounted(() => {
-        fetchFavorites()
+        if (userStore.isLoggedIn) {
+            fetchFavorites()
+        }
     })
 
     return {

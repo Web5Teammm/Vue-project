@@ -6,11 +6,11 @@
 
     <div v-else-if="hasComments" class="comments-list">
       <div v-for="comment in comments" :key="comment.id" class="comment-item">
-
+        <img :src="comment.movieCover" alt="海报" class="movie-cover" style="cursor: pointer;" @click="$router.push('/detail/'+comment.movie_id)">
         <div class="comment-content">
           <h5 class="movie-title">{{ comment.movieTitle }}</h5>
           <p class="comment-text">{{ comment.content }}</p>
-          <div class="comment-time">{{ comment.time }}</div>
+          <div class="comment-time">{{ new Date(comment.created_at).toLocaleString() }}</div>
         </div>
         <button class="delete-btn" @click="deleteComment(comment.id)" title="删除评论">
           <i class="fas fa-trash"></i>

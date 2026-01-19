@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import NavBar from '@/components/NavBar.vue'
 
 const userStore = useUserStore()
 
@@ -11,6 +12,7 @@ onMounted(() => {
 
 <template>
   <div id="app">
+    <NavBar />
     <router-view></router-view>
   </div>
 </template>

@@ -1,46 +1,20 @@
 <template>
   <!-- 固定导航栏 -->
-  <header class="nav-container">
-    <div class="nav-wrapper">
-      <h1 class="site-title">影视视界</h1>
-      <nav class="nav-links">
-        <router-link to="/" class="nav-link">首页</router-link>
-        <router-link to="/all-films" class="nav-link">全部影视</router-link>
-        <router-link to="/classify" class="nav-link">分类筛选</router-link>
-      </nav>
-      <div class="search-box">
-        <input
-          v-model="searchKeyword"
-          type="text"
-          class="search-input"
-          placeholder="搜索电影...（模糊搜索）"
-          @keyup.enter="handleSearch"
-        />
-        <button class="search-icon-btn" @click="handleSearch">🔍</button>
-      </div>
-      <div class="user-operate">
-        <router-link v-if="!isLogin" to="/login" class="btn">登录</router-link>
-        <router-link v-if="!isLogin" to="/register" class="btn btn-primary">注册</router-link>
-        <router-link v-else to="/personal" class="user-info-link">
-          <span class="user-name">{{ user?.nickname || user?.phone || '用户' }}</span>
-          <span class="user-avatar-icon">👤</span>
-        </router-link>
-      </div>
-    </div>
-  </header>
+
 
   <!-- 热门作品轮播 -->
   <section class="carousel-container">
     <swiper 
+      :modules="modules"
       :autoplay="{ delay: 5000, disableOnInteraction: false }"
       :loop="true"
       :navigation="false"
       :pagination="{ clickable: true, dynamicBullets: true }"
       :effect="'fade'"
       :fadeEffect="{ crossFade: true }"
+      @swiper="onSwiper"
       @mouseenter="stopCarousel"
       @mouseleave="startCarousel"
-      ref="carouselRef"
     >
       <swiper-slide v-for="(film, idx) in hotFilms" :key="film.id || idx">
         <router-link :to="`/detail/${film.id}`">
@@ -76,9 +50,11 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import { Autoplay, Pagination, EffectFade, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
+import 'swiper/css/navigation';
 import { movieApi } from '@/api/movie';
 import axios from 'axios';
 import { API_BASE_URL } from '@/api/config';
@@ -91,6 +67,7 @@ const isLogin = computed(() => userStore.isLoggedIn);
 const user = computed(() => userStore.user);
 // 轮播实例引用
 const carouselRef = ref(null);
+const modules = [Autoplay, Pagination, EffectFade, Navigation];
 // 搜索关键词
 const searchKeyword = ref('');
 // 轮播数据
@@ -211,12 +188,21 @@ onMounted(async () => {
   await Promise.all([fetchCarousel(), fetchClassifyList()]);
 });
 
-// 轮播控制：鼠标悬停暂停/离开继续
+const swiperInstance = ref(null);
+const onSwiper = (swiper) => {
+  swiperInstance.value = swiper;
+};
+
+// 轮播控制
 const stopCarousel = () => {
-  carouselRef.value.$swiper.autoplay.stop();
+  if (swiperInstance.value && swiperInstance.value.autoplay) {
+    swiperInstance.value.autoplay.stop();
+  }
 };
 const startCarousel = () => {
-  carouselRef.value.$swiper.autoplay.start();
+  if (swiperInstance.value && swiperInstance.value.autoplay) {
+    swiperInstance.value.autoplay.start();
+  }
 };
 </script>
 
@@ -341,12 +327,11 @@ const startCarousel = () => {
   font-size: 20px;
 }
 
-/* 轮播样式 - 全屏展示 */
+/* 轮播样式 */
 .carousel-container {
-  margin: 60px 0 0 0;
+  margin: 0;
   width: 100vw;
-  height: calc(100vh - 60px);
-  min-height: 600px;
+  height: calc(100vh - 60px); /* 减去导航栏高度 */
   overflow: hidden;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
